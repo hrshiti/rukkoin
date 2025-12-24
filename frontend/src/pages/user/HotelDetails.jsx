@@ -6,6 +6,7 @@ import {
     Calendar, UserCheck, TicketPercent, CheckCircle, Info, ThumbsUp
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import BookingBottomSheet from '../../components/modals/BookingBottomSheet';
 
 const HotelDetails = () => {
     const { id } = useParams();
@@ -15,6 +16,7 @@ const HotelDetails = () => {
     // Scroll Spy State
     const [activeTab, setActiveTab] = useState('Overview');
     const [showStickyHeader, setShowStickyHeader] = useState(false);
+    const [showBookingSheet, setShowBookingSheet] = useState(false);
 
     // Refs for scrolling to sections
     const overviewRef = useRef(null);
@@ -564,12 +566,30 @@ const HotelDetails = () => {
                     </span>
                 </div>
                 <button
-                    onClick={() => navigate('/booking-confirmation', { state: { animate: true }, replace: true })}
+                    onClick={() => setShowBookingSheet(true)}
                     className="bg-[#D32F2F] text-white px-8 py-3.5 rounded-xl font-bold text-sm shadow-md active:scale-95 transition-transform"
                 >
-                    Book Now & pay at hotel
+                    Book Now
                 </button>
             </div>
+
+            {/* Booking Bottom Sheet */}
+            <BookingBottomSheet
+                isOpen={showBookingSheet}
+                onClose={() => setShowBookingSheet(false)}
+                hotelData={hotel}
+                onConfirm={(bookingData) => {
+                    setShowBookingSheet(false);
+                    navigate('/booking-confirmation', {
+                        state: {
+                            animate: true,
+                            booking: bookingData,
+                            hotel: hotel
+                        },
+                        replace: true
+                    });
+                }}
+            />
 
         </div>
     );
